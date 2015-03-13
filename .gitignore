@@ -1,0 +1,8 @@
+*.pyc
+*~
+*.egg-info
+*.mo
+*.egg
+*.png
+*.jpg
+*.jpeg
