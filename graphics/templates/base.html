@@ -1,0 +1,69 @@
+{% load static from staticfiles %}
+
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Построение графиков - {% block meta_title %}{% endblock meta_title %}</title>
+    <meta name="description" value="Построение графиков по областям Украины" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet"
+        href="{{ PORTAL_URL }}{% static "css/main.css" %}">
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body>
+  <!-- Start Container -->
+  <div class="container">
+
+    <!-- Start Header -->
+    <div class="row" id="header"> 
+        <div class="col-xs-12">
+            <h1>Построение графиков</h1>
+        </div>
+
+        <!-- Start subheader -->
+        <div class="row" id="sub-header"> 
+            <div class="col-xs-12" id="group-selector">
+                <!-- Split button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    Области Украины <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Дія</a></li>
+                    <li><a href="#">Інша дія</a></li>
+                    <li><a href="#">Тут щось ще</a></li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+        <!-- End subheader -->
+    </div>
+    <!-- End Header -->
+    
+    <!-- Start Footer -->
+    <div class="row" id="footer">
+      <div class="col-xs-12">
+        &copy; 2015. Построение графиков по областям Украины
+      </div>
+    </div>
+    <!-- End Footer -->
+
+  </div>
+  <!-- End Container -->
+
+  <!-- Javascripts Inclusion -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="{% static "js/main.js" %}"></script>
+
+  {% block extra_js %}{% endblock extra_js %}
+</body>
+
+</html>
