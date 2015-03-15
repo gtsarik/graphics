@@ -14,11 +14,5 @@ class Group(models.Model):
         unique=True,
         verbose_name=u"Область")
 
-    # param = models.OneToOneField('Parameter',
-    #     verbose_name=u"Параметр",
-    #     blank=True,
-    #     null=True,
-    #     on_delete=models.SET_NULL)
-
     def __unicode__(self):
         return u"%s" % (self.region)

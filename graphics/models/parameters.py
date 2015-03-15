@@ -30,4 +30,4 @@ class Parameter(models.Model):
         on_delete=models.PROTECT)
 
     def __unicode__(self):
-        return u"%s %s" % (self.param, self.name)
+        return u"%s %s %s" % (self.param, self.name, self.value)

@@ -26,11 +26,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-FILEPATH = os.path.join(BASE_DIR, 'data')
-
-FILENAME = '2CuNPefD.json'
-
-
 # Application definition
 
 INSTALLED_APPS = (
