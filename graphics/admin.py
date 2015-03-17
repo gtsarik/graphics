@@ -124,7 +124,7 @@ class DataFileAdmin(admin.ModelAdmin):
                                     name=parameter[count+1],
                                     groups_id=region.id,
                                     value=parameter[count+2])
-                                create_bit = 1
+                                create_bit += 1
                             count += 2
             except Exception:
                 pass

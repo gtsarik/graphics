@@ -89,8 +89,11 @@ from django.conf import global_settings
 
 TEMPLATE_CONTEXT_PROCESSORS = \
     global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    "django.core.context_processors.request",
-)
+        "django.core.context_processors.request",
+        "graphicsapp.context_processors.absoluteUrl",
+        "graphicsapp.context_processors.listGroups",
+        "graphics.context_processors.groupsProcessor",
+    )
 
 # Media files
 MEDIA_URL = '/media/'
