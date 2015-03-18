@@ -92,12 +92,16 @@ class DataFileAdmin(admin.ModelAdmin):
     def csv_parsing_write_db(self, request, queryset):
         from graphicsapp.settings import MEDIA_ROOT
 
+        folder_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static/json'))
+
         # Number listed to and updated parameters in the database
         upadate_bit = 0
         create_bit = 0
 
         # We pass on the list of chosen files
         for qs in queryset:
+            csv_file_path = ''
+            data = []
             file_name = str(qs.file_path)[2:]
             file_path = os.path.join(MEDIA_ROOT, file_name)
 
@@ -114,7 +118,7 @@ class DataFileAdmin(admin.ModelAdmin):
                     group = filter(str.strip, group)
 
                     # Get the list of parameters without line groups
-                    next(csvreader)
+                    # next(csvreader)
 
                     # We pass through the list of parameters
                     for row in csvreader:
@@ -124,15 +128,23 @@ class DataFileAdmin(admin.ModelAdmin):
                         param = param.split(':')
                         size_parameter = len(param) - 1
 
+                        region = Group.objects.get_or_create(
+                                region=param[0])[0]
+
                         while (count < size_parameter):
                             # Write the name of the group in the database
                             # if it does not exist in the database
-                            region = Group.objects.get_or_create(
-                                region=param[0])[0]
+                            
                             parameter = Parameter.objects.get_or_create(
                                 name=group[count+1])[0]
 
-                            print '=== while ==='
+                            # print '=== while ==='
+                            id_region = region.id
+                            id_parameter = parameter.id
+                            csv_file_name = str(id_region) + '_' + str(id_parameter) + '.csv'
+                            csv_file_path = os.path.join(folder_path, csv_file_name)
+
+                            # print '=== csv_file_path === ', csv_file_path
 
                             # If the parameter already exists,
                             # its value is updated otherwise, write
@@ -153,9 +165,29 @@ class DataFileAdmin(admin.ModelAdmin):
                                     groups_id=region.id,
                                     value=param[count+2])
                                 create_bit += 1
+                            line = param[count+1] + ',' + param[count+2]
+                            # data.append(line)
+
+                            print '=== line === ', line
+                            # print '=== region === ', param[0]
+                            # print '=== param === ', group[count+1]
+                            # print '=== value === ', param[count+2]
+
+                            # print '**********************************************'
+
                             count += 2
-            except Exception:
-                pass
+
+
+                    # print '=== DATA === ', data
+                    
+                    # with open(csv_file_path, "w+") as f:
+                    #     for n in data:
+                    #         f.write(n)
+
+                            
+            except Exception, e:
+                # pass
+                print 'ERROR: %s' % e
         # Display a message on the listed to or updated data
         self.message_user(
             request,
@@ -165,6 +197,9 @@ class DataFileAdmin(admin.ModelAdmin):
     # Add the name of the parser and write to the database
     # in the admin panel for the model Parameters
     csv_parsing_write_db.short_description = "Добавить данные в базу"
+
+    def csv_write_file(self):
+        pass
 
 
 admin.site.register(Group, GroupAdmin)

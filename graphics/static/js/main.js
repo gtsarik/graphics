@@ -140,8 +140,8 @@ function initParamSelector() {
     // on field "change" event
     $('#param-selector select').change(function(event) {
         // get value of currently selected param option
-        var param = $(this).val();
-        // alert(param);
+        // var param = $(this).val();
+        alert(param);
         if (param) {
             // set cookie with expiration date 1 year since now;
             // cookie creation function takes period in days
@@ -157,29 +157,48 @@ function initParamSelector() {
     });
 }
 
-function initData() {
-    alert("data");
-    var article = document.querySelector('#chartdiv'),
-              data = article.parameter;
+// function initData() {
+//     alert("article");
+//     var article = document.querySelector('#chartdiv'),
+//         data = article.parameter;
         
-        alert(data);
-}
+//     alert(article.parameter);
+// }
 
-function showDetails() {
-    alert("data");
-    info = $('#chartdiv').data('parameter');
-    // for (var i=0; i < info.length; i++ ) {
-    //     alert(info[i]);
-    // }
-    alert(info);
+// function showDetails() {
+//     alert("info");
+//     info = $('#chartdiv').data('parameter');
+//     // for (var i=0; i < info.length; i++ ) {
+//     //     alert(info[i]);
+//     // }
+//     alert(info);
     
-}
+// }
 
+// function initJournal() {
+//     alert('initJournal')
+//   // var indicator = $('#ajax-progress-indicator');
 
+//   $('#chartdiv').ready(function(event){
+//     var box = $(this);
+//     alert(box.data('url'))
+//     $.ajax({
+//       'type': 'GET',
+//       'async': true,
+//       'dataType': 'json',
+//       'data': {
+//         'parameter': box.data('parameter'),
+//         'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+//       }
+//     });
+//   });
+// }
 
 
 $(document).ready(function(){
     initGroupSelector();
     initParamSelector();
-    showDetails();
+    // showDetails();
+    // initJournal();
+    // initData();
 });
