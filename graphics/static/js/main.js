@@ -168,9 +168,9 @@ function initData() {
 function showDetails() {
     alert("data");
     info = $('#chartdiv').data('parameter');
-    for (var i=0; i < info.length; i++ ) {
-        alert(info[i]);
-    }
+    // for (var i=0; i < info.length; i++ ) {
+    //     alert(info[i]);
+    // }
     alert(info);
     
 }
