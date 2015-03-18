@@ -4,40 +4,46 @@
 
 {% block meta_title %}Построение графиков по областям Украины{% endblock meta_title %}
 
-{% block title %}Графики{% endblock title %}
+{% block title %}
+    {% if CURRENT_GROUP %}
+        Показатели по области {{ CURRENT_GROUP.region }}
+    {% else%}
+        Выберите нужную область
+    {% endif %}
+{% endblock title %}
 
 {% block content %}
 
     <!-- Start subheader -->
-        <div class="col-xs-12" id="group-selector">
-            <select class="form-control">
-                <option value="">Области Украины</option>
-                {% for group in GROUPS %}
-                    <option value="{{ group.id }}"{% if group.selected %}selected="1"{% endif %}>{{ group.region }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            Области Украины<span class="caret"></span></button>
-          <ul class="dropdown-menu" role="menu">
-            {% for group in GROUPS_LIST %}
-                <li onclick="loadGraphic('static/json/data.json')">{{ group.region }}</li>
+    <div class="col-xs-3" id="group-selector">
+        <select class="form-control">
+            <option value="">Области Украины</option>
+            {% for group in GROUPS %}
+                <option value="{{ group.id }}"{% if group.selected %}selected="1"{% endif %}>{{ group.region }}</option>
             {% endfor %}
-          </ul>
-        </div> -->
-        <div id="chartdiv" style="width: 100%; height: 400px;"></div>
-        <!-- End subheader -->
-
+        </select>
+    </div>
+    <div class="col-xs-3" id="param-selector">
+        <select class="form-control">
+            <option value="">Параметры</option>
+            {% for parameter in PARAMETERS %}
+                <option value="{{ parameter.id }}"{% if parameter.selected %}selected="1"{% endif %}>{{ parameter.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <!-- End subheader -->
     
-    <!-- <span id="val_1" onclick="loadGraphic('static/json/data.json')">2000</span> -->
-
+    <!-- Start Diagramm -->
+    {% if CURRENT_GROUP %}
+        {% for parameter in PARAMETERS %}
+            {% if parameter.selected %}
+                <h4 id="test">{{ parameter.name }}</h4>
+                <div class="col-xs-12" id="chartdiv" data-parameter={{ PARAMETERS }}></div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <!-- End Diagramm -->
 
 {% endblock content %}
 
-{% block extra_js %}
-
-    <script src="{% static "js/main.js" %}"></script>
-
-{% endblock extra_js %}
+{% block extra_js %}{% endblock extra_js %}

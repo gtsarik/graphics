@@ -37,11 +37,7 @@
             {% endif %}
         {% endblock %}
 
-        {% if title %}
-            <h2>{% block title %}{% endblock title %}</h2>
-        {% else %}
-            <h3>Выберите нужную область</h3>
-        {% endif %}
+        <h3>{% block title %}{% endblock title %}</h3>
         {% block content %}{% endblock content %}
 
       </div>

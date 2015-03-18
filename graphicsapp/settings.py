@@ -93,6 +93,7 @@ TEMPLATE_CONTEXT_PROCESSORS = \
         "graphicsapp.context_processors.absoluteUrl",
         "graphicsapp.context_processors.listGroups",
         "graphics.context_processors.groupsProcessor",
+        "graphics.context_processors.parametersProcessor",
     )
 
 # Media files

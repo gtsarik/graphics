@@ -1,18 +1,3 @@
-// function loadGraphic(param) {
-//     var myChart = new JSChart('graph', 'bar');
-//     myChart.setDataJSON(param);
-//     // myChart.setDataJSON("static/json/data.json");
-//     myChart.draw();
-
-//     function callback() {
-//         alert('User click');
-//     }
-// }
-
-// function alerts(param) {
-//     alert(param);
-// }
-
 var chart;
 var chartData = [];
 
@@ -59,8 +44,17 @@ AmCharts.ready(function () {
     chart.creditsPosition = "top-right";
 
     chart.write("chartdiv");
+    var file_name = $.cookie('current_param');
 
-    loadCSV("static/json/11CuNPefD.csv");
+    if ( file_name !== undefined) {
+        file_name += ".csv"
+        alert(file_name);
+        // loadCSV(file_name);
+        loadCSV("static/json/11CuNPefD.csv");
+    }
+
+    // loadCSV("static/json/11CuNPefD.csv");
+
 });
 
 function loadCSV(file) {
@@ -124,10 +118,12 @@ function initGroupSelector() {
     $('#group-selector select').change(function(event) {
         // get value of currently selected group option
         var group = $(this).val();
+        // alert(group);
         if (group) {
             // set cookie with expiration date 1 year since now;
             // cookie creation function takes period in days
             $.cookie('current_group', group, {'path': '/', 'expires': 365});
+            $.removeCookie('current_param', {'path': '/'});
         } else {
             // otherwise we delete the cookie
             $.removeCookie('current_group', {'path': '/'});
@@ -139,7 +135,51 @@ function initGroupSelector() {
     });
 }
 
+function initParamSelector() {
+    // look up select element with groups and attach our even handler
+    // on field "change" event
+    $('#param-selector select').change(function(event) {
+        // get value of currently selected param option
+        var param = $(this).val();
+        // alert(param);
+        if (param) {
+            // set cookie with expiration date 1 year since now;
+            // cookie creation function takes period in days
+            $.cookie('current_param', param, {'path': '/', 'expires': 365});
+        } else {
+            // otherwise we delete the cookie
+            $.removeCookie('current_param', {'path': '/'});
+        }
+        
+        // and reload a page
+        location.reload(true);
+        return true;
+    });
+}
+
+function initData() {
+    alert("data");
+    var article = document.querySelector('#chartdiv'),
+              data = article.parameter;
+        
+        alert(data);
+}
+
+function showDetails() {
+    alert("data");
+    info = $('#chartdiv').data('parameter');
+    for (var i=0; i < info.length; i++ ) {
+        alert(info[i]);
+    }
+    alert(info);
+    
+}
+
+
+
 
 $(document).ready(function(){
     initGroupSelector();
+    initParamSelector();
+    showDetails();
 });

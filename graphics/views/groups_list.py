@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-# from django.http import HttpResponse
+from ..util import get_current_group, get_current_param
 
-from ..models import Group, Parameter
-
+# from ..models import Group, Parameter
 
 
 def groupsList(request):
     ''' View for graphic page '''
-    return render(request, 'groups_list.html', {})
 
+    current_group = get_current_group(request)
+    current_param = get_current_param(request)
 
+    return render(
+        request,
+        'groups_list.html',
+        {'CURRENT_PARAMETERS': current_param,
+        'CURRENT_GROUP': current_group}
+    )

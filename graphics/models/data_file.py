@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
+
 class DataFile(models.Model):
     ''' Data File Model'''
 

@@ -20,6 +20,28 @@ def get_groups(request):
     return groups
 
 
+def get_parameters(request):
+    """Returns list of existing paarmeters"""
+    # deferred import of Group model to avoid cycled imports
+    from .models import Parameter
+
+    # get currently selected group
+    cur_param = get_current_param(request)
+    parameters = []
+
+    for parameter in Parameter.objects.all().order_by('name'):
+        parameters.append({
+            'id': parameter.id,
+            'name': parameter.name,
+            'selected': cur_param and cur_param.id == parameter.id
+            and True or False
+        })
+
+    # print '=== parameters === ', parameters
+
+    return parameters
+
+
 def get_current_group(request):
     """Returns currently selected group or None"""
 
@@ -34,5 +56,25 @@ def get_current_group(request):
             return None
         else:
             return group
+    else:
+        return None
+
+
+def get_current_param(request):
+    """Returns currently selected parameter of group or None"""
+
+    # we remember selected group in a cookie
+    pk = request.COOKIES.get('current_param')
+
+    # print '=== PK === ', pk
+
+    if pk:
+        from .models import Parameter
+        try:
+            parameter = Parameter.objects.get(pk=int(pk))
+        except Parameter.DoesNotExist:
+            return None
+        else:
+            return parameter
     else:
         return None

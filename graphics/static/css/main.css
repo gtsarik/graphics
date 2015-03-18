@@ -2,22 +2,14 @@
 .alert {
   margin: 10px 0 5px 0;
 }
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
 /* Groups Selector */
-#group-selector {
+#group-selector, #param-selector {
   margin-top: 30px;
-}
-#group-selector select {
-  width: 80%;
-  margin: 0;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  height: 30px;
-  line-height: 30px;
-  color: #555555;
 }
 
 /* Footer Styles */
@@ -27,66 +19,29 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 10px;
 }
 
-/* Form Styles */
-textarea,
-select,
-input {
+/* Select Styles */
+select{
   max-width: 300px;
 }
 
-/* Journal Table Styles */
-td.day-box,
-th.day-header {
-  padding: 4px !important;
-  vertical-align: middle !important;
-  text-align: center;
-}
-
-#ajax-progress-indicator {
-  display: none;
-}
-
-/* LOADER */
-button#load{
-    padding: 0 3em;
-    outline: none;
-    border: none;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 1px;
-    font-size: 1em;
-    line-height: 4;
-    overflow: hidden;
-    border-radius: 5px;
-    background: rgba(0,0,0,0.2);
-    text-align: center;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-}
-    
-#loader-img{
-margin: 0 auto;
-display: block;
-}
- 
-#content{
-    width: 40%;
-    margin: 0 auto;
-    padding: 3em;
-    text-align: center;
-    color: #fff;
-    font-family: 'Raleway', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-}
- 
-.border{border: 3px solid #fff;     border-radius: 5px;}
-
-
+/* Diagramm Styles*/
 #chartdiv {
     width       : 100%;
-    height      : 500px;
+    height      : 400px;
     font-size   : 11px;
-}   
+}
+
+/* Link Parameters */
+#link-param, #name-region {
+  margin-top: 20px;
+}
+
+.name-region {
+  margin-top: 35px;
+}
+
+#link-param li {
+  margin-top: 55px;
+  margin: 5px;
+}
+
