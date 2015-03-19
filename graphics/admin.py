@@ -172,7 +172,7 @@ class DataFileAdmin(admin.ModelAdmin):
         # Gets the path to the folder where
         # the files are generated will be recorded
         folder_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), 'static/json'))
+            os.path.join(os.path.dirname(__file__), 'static/data'))
 
         try:
             # Obtain a list of all groups and parameters

@@ -48,7 +48,7 @@ AmCharts.ready(function () {
     var param = $.cookie('current_param');
 
     if (group !== undefined && param !== undefined) {
-        file_path = "static/json/" + group + "_" + param + ".csv"
+        file_path = "static/data/" + group + "_" + param + ".csv"
         loadCSV(file_path)
     }
 });
