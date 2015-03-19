@@ -2,9 +2,6 @@ var chart;
 var chartData = [];
 
 AmCharts.ready(function () {
-    // generate some data first
-    // generateChartData();
-
     // SERIAL CHART
     chart = new AmCharts.AmSerialChart();
     chart.dataProvider = chartData;
@@ -45,7 +42,8 @@ AmCharts.ready(function () {
 
     chart.write("chartdiv");
 
-    // 
+    // Generate file name via cookies to display
+    // the information in the charts
     var group = $.cookie('current_group');
     var param = $.cookie('current_param');
 
@@ -55,6 +53,7 @@ AmCharts.ready(function () {
     }
 });
 
+// Download the file to send to the parsing
 function loadCSV(file) {
     if (window.XMLHttpRequest) {
         // IE7+, Firefox, Chrome, Opera, Safari
@@ -69,6 +68,7 @@ function loadCSV(file) {
     parseCSV(request.responseText);
 }
 
+// Parsing file
 function parseCSV(data) {
     //replace UNIX new lines
     data = data.replace(/\r\n/g, "\n");
@@ -85,16 +85,13 @@ function parseCSV(data) {
         if (rows[i]) {
             // our columns are separated by comma
             var column = rows[i].split(",");
-            // alert(column);
+
             // column is array now
             // first item is date
             var date = column[0];
 
             // second item is value of the second column
             var value = column[1];
-
-            // alert('date === ', date);
-            // alert('value === ', value);
             
             // create object which contains all these items:
             var dataObject = {
@@ -116,7 +113,7 @@ function initGroupSelector() {
     $('#group-selector select').change(function(event) {
         // get value of currently selected group option
         var group = $(this).val();
-        // alert(group);
+
         if (group) {
             // set cookie with expiration date 1 year since now;
             // cookie creation function takes period in days
@@ -139,7 +136,7 @@ function initParamSelector() {
     $('#param-selector select').change(function(event) {
         // get value of currently selected param option
         var param = $(this).val();
-        // alert(param);
+        
         if (param) {
             // set cookie with expiration date 1 year since now;
             // cookie creation function takes period in days

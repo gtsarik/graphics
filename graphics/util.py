@@ -61,10 +61,8 @@ def get_current_group(request):
 def get_current_param(request):
     """Returns currently selected parameter of group or None"""
 
-    # we remember selected group in a cookie
+    # we remember selected parameter in a cookie
     pk = request.COOKIES.get('current_param')
-
-    # print '=== PK === ', pk
 
     if pk:
         from .models import Parameter

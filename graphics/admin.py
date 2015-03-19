@@ -65,7 +65,7 @@ class DataFileAdmin(admin.ModelAdmin):
     actions = ['csv_parsing_write_db', 'delete_file']
     form = DataFileFormAdmin
 
-    # Creating these steps to remove the file (s) from the database and server
+    # Delete file(s) from the database and server
     def delete_file(self, request, queryset):
         from graphicsapp.settings import MEDIA_ROOT
 
@@ -98,8 +98,6 @@ class DataFileAdmin(admin.ModelAdmin):
 
         # We pass on the list of chosen files
         for qs in queryset:
-            # csv_file_path = ''
-            # data = []
             file_name = str(qs.file_path)[2:]
             file_path = os.path.join(MEDIA_ROOT, file_name)
 
@@ -114,9 +112,6 @@ class DataFileAdmin(admin.ModelAdmin):
                     # Get the list of groups and remove empty elements
                     group = next(csvreader)
                     group = filter(str.strip, group)
-
-                    # Get the list of parameters without line groups
-                    # next(csvreader)
 
                     # We pass through the list of parameters
                     for row in csvreader:
@@ -135,14 +130,6 @@ class DataFileAdmin(admin.ModelAdmin):
 
                             parameter = Parameter.objects.get_or_create(
                                 name=group[count+1])[0]
-
-                            # print '=== while ==='
-                            # id_region = region.id
-                            # id_parameter = parameter.id
-                            # csv_file_name = str(id_region) + '_' + str(id_parameter) + '.csv'
-                            # csv_file_path = os.path.join(folder_path, csv_file_name)
-
-                            # print '=== csv_file_path === ', csv_file_path
 
                             # If the parameter already exists,
                             # its value is updated otherwise, write
@@ -163,25 +150,10 @@ class DataFileAdmin(admin.ModelAdmin):
                                     groups_id=region.id,
                                     value=param[count+2])
                                 create_bit += 1
-                            # line = param[count+1] + ',' + param[count+2]
-                            # data.append(line)
-
-                            # print '=== line === ', line
-                            # print '=== region === ', param[0]
-                            # print '=== param === ', group[count+1]
-                            # print '=== value === ', param[count+2]
-
-                            # print '**********************************************'
-
+                            # Go to the next group
                             count += 2
-                    # print '=== DATA === ', data
-
-                    # with open(csv_file_path, "w+") as f:
-                    #     for n in data:
-                    #         f.write(n)
-            except Exception, e:
-                # pass
-                print 'ERROR: %s' % e
+            except Exception:
+                pass
 
         self.csv_write_file()
 
@@ -195,40 +167,54 @@ class DataFileAdmin(admin.ModelAdmin):
     # in the admin panel for the model Parameters
     csv_parsing_write_db.short_description = "Добавить данные в базу"
 
+    # Formation of .csv files to groups and parameters for parsing
     def csv_write_file(self):
+        # Gets the path to the folder where
+        # the files are generated will be recorded
         folder_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), 'static/json'))
 
         try:
+            # Obtain a list of all groups and parameters
             groups = Group.objects.all()
             parameters = Parameter.objects.all()
 
+            # We pass through the list of groups
             for group in groups:
                 id_group = group.id
 
+                # We pass through the list of parameters
                 for parameter in parameters:
                     id_parameter = parameter.id
-                    csv_file_name = str(id_group) + '_' + str(id_parameter) + '.csv'
+                    csv_file_name = str(id_group) \
+                        + '_' + str(id_parameter) \
+                        + '.csv'
                     csv_file_path = os.path.join(folder_path, csv_file_name)
 
+                    # Create a file or open to overwrite
                     try:
                         ofile = open(csv_file_path, "wb")
-                        print '=== OPEN ==='
-                        writer = csv.writer(ofile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                        print '=== writer ==='
+                        writer = csv.writer(
+                            ofile,
+                            delimiter=',',
+                            quotechar='|',
+                            quoting=csv.QUOTE_MINIMAL)
+                        # Get a list of all values in the group and parameter
                         values = Value.objects.filter(
                             groups_id=id_group,
                             parameters_id=id_parameter)
-                        print '=== values ==='
 
+                        # We pass on the list of received values
+                        # and write to a file
                         for value in values:
-                            writer.writerow((value.name.encode('utf-8'), str(value.value)))
-                            # row = '128'
-                            # writer.writerow(row)
+                            writer.writerow((
+                                value.name.encode('utf-8'),
+                                str(value.value)))
                     finally:
+                        # Close the file
                         ofile.close()
-        except Exception, e:
-            print 'ERROR === %s' % e
+        except Exception:
+            pass
 
 
 admin.site.register(Group, GroupAdmin)
