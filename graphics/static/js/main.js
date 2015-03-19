@@ -41,6 +41,14 @@ AmCharts.ready(function () {
     // chart.creditsPosition = "top-right";
 
     chart.write("chartdiv");
+    var dict = $("#chartdiv").data("dict").a;
+
+    alert(dict);
+
+    // var mydiv=document.getElementById('chartdiv')
+    // var res = mydiv.getAttribute("data-dict")
+
+    // alert(res);
 
     // Generate file name via cookies to display
     // the information in the charts
