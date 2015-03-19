@@ -8,12 +8,12 @@ AmCharts.ready(function () {
     // SERIAL CHART
     chart = new AmCharts.AmSerialChart();
     chart.dataProvider = chartData;
-    chart.categoryField = "country";
+    chart.categoryField = "region";
     chart.startDuration = 1;
 
     chart.dataProvider = chartData;
     chart.categoryField = "date";
-    chart.dataDateFormat = "YYYY-MM-DD";
+    // chart.dataDateFormat = "YYYY-MM-DD";
 
     // AXES
     // category
@@ -38,23 +38,21 @@ AmCharts.ready(function () {
     var chartCursor = new AmCharts.ChartCursor();
     chartCursor.cursorAlpha = 0;
     chartCursor.zoomable = false;
-    chartCursor.categoryBalloonEnabled = false;
+    chartCursor.categoryBalloonEnabled = true;
     chart.addChartCursor(chartCursor);
 
-    chart.creditsPosition = "top-right";
+    // chart.creditsPosition = "top-right";
 
     chart.write("chartdiv");
-    var file_name = $.cookie('current_param');
 
-    if ( file_name !== undefined) {
-        file_name += ".csv"
-        alert(file_name);
-        // loadCSV(file_name);
-        loadCSV("static/json/11CuNPefD.csv");
+    // 
+    var group = $.cookie('current_group');
+    var param = $.cookie('current_param');
+
+    if (group !== undefined && param !== undefined) {
+        file_path = "static/json/" + group + "_" + param + ".csv"
+        loadCSV(file_path)
     }
-
-    // loadCSV("static/json/11CuNPefD.csv");
-
 });
 
 function loadCSV(file) {
@@ -90,10 +88,10 @@ function parseCSV(data) {
             // alert(column);
             // column is array now
             // first item is date
-            var date = column[1];
+            var date = column[0];
 
             // second item is value of the second column
-            var value = column[2];
+            var value = column[1];
 
             // alert('date === ', date);
             // alert('value === ', value);
@@ -140,8 +138,8 @@ function initParamSelector() {
     // on field "change" event
     $('#param-selector select').change(function(event) {
         // get value of currently selected param option
-        // var param = $(this).val();
-        alert(param);
+        var param = $(this).val();
+        // alert(param);
         if (param) {
             // set cookie with expiration date 1 year since now;
             // cookie creation function takes period in days
@@ -157,48 +155,7 @@ function initParamSelector() {
     });
 }
 
-// function initData() {
-//     alert("article");
-//     var article = document.querySelector('#chartdiv'),
-//         data = article.parameter;
-        
-//     alert(article.parameter);
-// }
-
-// function showDetails() {
-//     alert("info");
-//     info = $('#chartdiv').data('parameter');
-//     // for (var i=0; i < info.length; i++ ) {
-//     //     alert(info[i]);
-//     // }
-//     alert(info);
-    
-// }
-
-// function initJournal() {
-//     alert('initJournal')
-//   // var indicator = $('#ajax-progress-indicator');
-
-//   $('#chartdiv').ready(function(event){
-//     var box = $(this);
-//     alert(box.data('url'))
-//     $.ajax({
-//       'type': 'GET',
-//       'async': true,
-//       'dataType': 'json',
-//       'data': {
-//         'parameter': box.data('parameter'),
-//         'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
-//       }
-//     });
-//   });
-// }
-
-
 $(document).ready(function(){
     initGroupSelector();
     initParamSelector();
-    // showDetails();
-    // initJournal();
-    // initData();
 });

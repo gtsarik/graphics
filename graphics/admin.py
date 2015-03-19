@@ -92,16 +92,14 @@ class DataFileAdmin(admin.ModelAdmin):
     def csv_parsing_write_db(self, request, queryset):
         from graphicsapp.settings import MEDIA_ROOT
 
-        folder_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static/json'))
-
         # Number listed to and updated parameters in the database
         upadate_bit = 0
         create_bit = 0
 
         # We pass on the list of chosen files
         for qs in queryset:
-            csv_file_path = ''
-            data = []
+            # csv_file_path = ''
+            # data = []
             file_name = str(qs.file_path)[2:]
             file_path = os.path.join(MEDIA_ROOT, file_name)
 
@@ -134,15 +132,15 @@ class DataFileAdmin(admin.ModelAdmin):
                         while (count < size_parameter):
                             # Write the name of the group in the database
                             # if it does not exist in the database
-                            
+
                             parameter = Parameter.objects.get_or_create(
                                 name=group[count+1])[0]
 
                             # print '=== while ==='
-                            id_region = region.id
-                            id_parameter = parameter.id
-                            csv_file_name = str(id_region) + '_' + str(id_parameter) + '.csv'
-                            csv_file_path = os.path.join(folder_path, csv_file_name)
+                            # id_region = region.id
+                            # id_parameter = parameter.id
+                            # csv_file_name = str(id_region) + '_' + str(id_parameter) + '.csv'
+                            # csv_file_path = os.path.join(folder_path, csv_file_name)
 
                             # print '=== csv_file_path === ', csv_file_path
 
@@ -165,10 +163,10 @@ class DataFileAdmin(admin.ModelAdmin):
                                     groups_id=region.id,
                                     value=param[count+2])
                                 create_bit += 1
-                            line = param[count+1] + ',' + param[count+2]
+                            # line = param[count+1] + ',' + param[count+2]
                             # data.append(line)
 
-                            print '=== line === ', line
+                            # print '=== line === ', line
                             # print '=== region === ', param[0]
                             # print '=== param === ', group[count+1]
                             # print '=== value === ', param[count+2]
@@ -176,18 +174,17 @@ class DataFileAdmin(admin.ModelAdmin):
                             # print '**********************************************'
 
                             count += 2
-
-
                     # print '=== DATA === ', data
-                    
+
                     # with open(csv_file_path, "w+") as f:
                     #     for n in data:
                     #         f.write(n)
-
-                            
             except Exception, e:
                 # pass
                 print 'ERROR: %s' % e
+
+        self.csv_write_file()
+
         # Display a message on the listed to or updated data
         self.message_user(
             request,
@@ -199,7 +196,39 @@ class DataFileAdmin(admin.ModelAdmin):
     csv_parsing_write_db.short_description = "Добавить данные в базу"
 
     def csv_write_file(self):
-        pass
+        folder_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), 'static/json'))
+
+        try:
+            groups = Group.objects.all()
+            parameters = Parameter.objects.all()
+
+            for group in groups:
+                id_group = group.id
+
+                for parameter in parameters:
+                    id_parameter = parameter.id
+                    csv_file_name = str(id_group) + '_' + str(id_parameter) + '.csv'
+                    csv_file_path = os.path.join(folder_path, csv_file_name)
+
+                    try:
+                        ofile = open(csv_file_path, "wb")
+                        print '=== OPEN ==='
+                        writer = csv.writer(ofile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                        print '=== writer ==='
+                        values = Value.objects.filter(
+                            groups_id=id_group,
+                            parameters_id=id_parameter)
+                        print '=== values ==='
+
+                        for value in values:
+                            writer.writerow((value.name.encode('utf-8'), str(value.value)))
+                            # row = '128'
+                            # writer.writerow(row)
+                    finally:
+                        ofile.close()
+        except Exception, e:
+            print 'ERROR === %s' % e
 
 
 admin.site.register(Group, GroupAdmin)

@@ -37,8 +37,6 @@ def get_parameters(request):
             and True or False
         })
 
-    # print '=== parameters === ', parameters
-
     return parameters
 
 

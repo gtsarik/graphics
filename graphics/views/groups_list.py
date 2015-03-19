@@ -11,12 +11,6 @@ def groupsList(request):
     current_group = get_current_group(request)
     current_param = get_current_param(request)
 
-    data = request.GET
-
-    # param = data['parameter']
-
-    print '=== PARAM === ', data
-
     return render(
         request,
         'groups_list.html',
