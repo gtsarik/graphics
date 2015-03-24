@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-# from django.core.urlresolvers import reverse
 from django.forms import ModelForm, ValidationError
 import csv
 import os
@@ -85,7 +84,8 @@ class DataFileAdmin(admin.ModelAdmin):
 
     # Adding a name for the action to delete a file(s)
     # from the database and server
-    delete_file.short_description = u"Удалить выбраные файлы из базы и с сервера"
+    delete_file.short_description = \
+        u"Удалить выбраные файлы из базы и с сервера"
 
     # Create an action of the parser and write to the database
     # in the admin panel for the model parameters
@@ -155,8 +155,6 @@ class DataFileAdmin(admin.ModelAdmin):
             except Exception:
                 pass
 
-        self.csv_write_file()
-
         # Display a message on the listed to or updated data
         self.message_user(
             request,
@@ -166,55 +164,6 @@ class DataFileAdmin(admin.ModelAdmin):
     # Add the name of the parser and write to the database
     # in the admin panel for the model Parameters
     csv_parsing_write_db.short_description = "Добавить данные в базу"
-
-    # Formation of .csv files to groups and parameters for parsing
-    def csv_write_file(self):
-        # Gets the path to the folder where
-        # the files are generated will be recorded
-        folder_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), 'static/json'))
-
-        try:
-            # Obtain a list of all groups and parameters
-            groups = Group.objects.all()
-            parameters = Parameter.objects.all()
-
-            # We pass through the list of groups
-            for group in groups:
-                id_group = group.id
-
-                # We pass through the list of parameters
-                for parameter in parameters:
-                    id_parameter = parameter.id
-                    csv_file_name = str(id_group) \
-                        + '_' + str(id_parameter) \
-                        + '.csv'
-                    csv_file_path = os.path.join(folder_path, csv_file_name)
-
-                    # Create a file or open to overwrite
-                    try:
-                        ofile = open(csv_file_path, "wb")
-                        writer = csv.writer(
-                            ofile,
-                            delimiter=',',
-                            quotechar='|',
-                            quoting=csv.QUOTE_MINIMAL)
-                        # Get a list of all values in the group and parameter
-                        values = Value.objects.filter(
-                            groups_id=id_group,
-                            parameters_id=id_parameter)
-
-                        # We pass on the list of received values
-                        # and write to a file
-                        for value in values:
-                            writer.writerow((
-                                value.name.encode('utf-8'),
-                                str(value.value)))
-                    finally:
-                        # Close the file
-                        ofile.close()
-        except Exception:
-            pass
 
 
 admin.site.register(Group, GroupAdmin)

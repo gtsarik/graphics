@@ -1,118 +1,69 @@
 var chart;
 var chartData = [];
 
+
 AmCharts.ready(function () {
-    // SERIAL CHART
-    chart = new AmCharts.AmSerialChart();
-    chart.dataProvider = chartData;
-    chart.categoryField = "region";
-    chart.startDuration = 1;
+    var box = $('#chartdiv');
+    var indicator = $('#ajax-progress-indicator');
 
-    chart.dataProvider = chartData;
-    chart.categoryField = "date";
-    // chart.dataDateFormat = "YYYY-MM-DD";
+    $.ajax({
+      'type': 'POST',
+      'async': true,
+      'dataType': 'json',
+      'data': {
+        'group_id': box.data('group-id'),
+        'param_id': box.data('param-id'),
+        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+      },
+      'beforeSend': function(xhr, settings){
+        indicator.show();
+      },
+      'error': function(xhr, status, error){
+        alert(error);
+        indicator.hide();
+      },
+      'success': function(data, status, xhr){
+        chartData = data['data'];
+        indicator.hide();
 
-    // AXES
-    // category
-    var categoryAxis = chart.categoryAxis;
-    categoryAxis.labelRotation = 90;
-    categoryAxis.gridPosition = "start";
+        // SERIAL CHART
+        chart = new AmCharts.AmSerialChart();
+        chart.dataProvider = JSON.parse(chartData);
+        chart.categoryField = "parameter";
+        chart.startDuration = 1;
 
-    // value
-    // in case you don't want to change default settings of value axis,
-    // you don't need to create it, as one value axis is created automatically.
+        // AXES
+        // category
+        var categoryAxis = chart.categoryAxis;
+        categoryAxis.labelRotation = 90;
+        categoryAxis.gridPosition = "start";
 
-    // GRAPH
-    var graph = new AmCharts.AmGraph();
-    graph.valueField = "visits";
-    graph.balloonText = "[[category]]: <b>[[value]]</b>";
-    graph.type = "column";
-    graph.lineAlpha = 0;
-    graph.fillAlphas = 0.8;
-    chart.addGraph(graph);
+        // value
+        // in case you don't want to change default settings of value axis,
+        // you don't need to create it, as one value axis is created automatically.
 
-    // CURSOR
-    var chartCursor = new AmCharts.ChartCursor();
-    chartCursor.cursorAlpha = 0;
-    chartCursor.zoomable = false;
-    chartCursor.categoryBalloonEnabled = true;
-    chart.addChartCursor(chartCursor);
+        // GRAPH
+        var graph = new AmCharts.AmGraph();
+        graph.valueField = "value";
+        graph.balloonText = "[[category]]: <b>[[value]]</b>";
+        graph.type = "column";
+        graph.lineAlpha = 0;
+        graph.fillAlphas = 0.8;
+        chart.addGraph(graph);
 
-    // chart.creditsPosition = "top-right";
+        // CURSOR
+        var chartCursor = new AmCharts.ChartCursor();
+        chartCursor.cursorAlpha = 0;
+        chartCursor.zoomable = false;
+        chartCursor.categoryBalloonEnabled = false;
+        chart.addChartCursor(chartCursor);
 
-    chart.write("chartdiv");
-    var dict = $("#chartdiv").data("dict").a;
+        chart.creditsPosition = "top-right";
 
-    alert(dict);
-
-    // var mydiv=document.getElementById('chartdiv')
-    // var res = mydiv.getAttribute("data-dict")
-
-    // alert(res);
-
-    // Generate file name via cookies to display
-    // the information in the charts
-    var group = $.cookie('current_group');
-    var param = $.cookie('current_param');
-
-    if (group !== undefined && param !== undefined) {
-        file_path = "static/json/" + group + "_" + param + ".csv"
-        loadCSV(file_path)
-    }
+        chart.write("chartdiv");
+      }
+    });
 });
-
-// Download the file to send to the parsing
-function loadCSV(file) {
-    if (window.XMLHttpRequest) {
-        // IE7+, Firefox, Chrome, Opera, Safari
-        var request = new XMLHttpRequest();
-    } else {
-        // code for IE6, IE5
-        var request = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-    // load
-    request.open('GET', file, false);
-    request.send();
-    parseCSV(request.responseText);
-}
-
-// Parsing file
-function parseCSV(data) {
-    //replace UNIX new lines
-    data = data.replace(/\r\n/g, "\n");
-    
-    //replace MAC new lines
-    data = data.replace(/\r/g, "\n");
-
-    //split into rows
-    var rows = data.split("\n");
-
-    // loop through all rows
-    for (var i = 0; i < rows.length; i++) {
-        // this line helps to skip empty rows
-        if (rows[i]) {
-            // our columns are separated by comma
-            var column = rows[i].split(",");
-
-            // column is array now
-            // first item is date
-            var date = column[0];
-
-            // second item is value of the second column
-            var value = column[1];
-            
-            // create object which contains all these items:
-            var dataObject = {
-                date: date,
-                visits: value
-            };
-
-        // add object to chartData array
-        chartData.push(dataObject);
-        }
-    }
-    chart.validateData();
-}
 
 
 function initGroupSelector() {
@@ -130,6 +81,7 @@ function initGroupSelector() {
         } else {
             // otherwise we delete the cookie
             $.removeCookie('current_group', {'path': '/'});
+            $.removeCookie('current_param', {'path': '/'});
         }
         
         // and reload a page
@@ -137,6 +89,7 @@ function initGroupSelector() {
         return true;
     });
 }
+
 
 function initParamSelector() {
     // look up select element with groups and attach our even handler

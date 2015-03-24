@@ -1,28 +1,47 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+# from django.shortcuts import render
 from ..util import get_current_group, get_current_param
+import json
+from django.views.generic.base import TemplateView
+from django.http import JsonResponse
 
-# from django.utils import simplejson
-import simplejson
+from ..models import Value
 
 
-def groupsList(request):
-    ''' View for graphic page '''
+class GroupListView(TemplateView):
+    template_name = 'groups_list.html'
 
-    current_group = get_current_group(request)
-    current_param = get_current_param(request)
+    def get_context_data(self, **kwargs):
+        ''' View for graphic page '''
+        context = super(GroupListView, self).get_context_data(**kwargs)
 
-    chartData = {'a': '4'}
+        context['current_group'] = get_current_group(self.request)
+        context['current_param'] = get_current_param(self.request)
 
-    js_data = simplejson.dumps(chartData)
+        return context
 
-    print '=== js_data === ', js_data
-    # render_template_to_response("my_template.html", {"my_data": js_data, …})
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        chart_dict = {}
+        chart_data = []
 
-    return render(
-        request,
-        'groups_list.html',
-        {'CURRENT_PARAMETERS': current_param,
-        'CURRENT_GROUP': current_group,
-        "my_data": chartData}
-    )
+        try:
+            group_id = data['group_id']
+            param_id = data['param_id']
+
+            # Get a list of all values in the group and parameter
+            values = Value.objects.filter(
+                groups_id=group_id,
+                parameters_id=param_id)
+
+            for value in values:
+                chart_dict['parameter'] = value.name.encode('utf-8')
+                chart_dict['value'] = value.value
+                chart_data.append(chart_dict)
+                chart_dict = {}
+        except Exception:
+            pass
+
+        chart_data = json.dumps(chart_data)
+
+        return JsonResponse({'data': chart_data})
